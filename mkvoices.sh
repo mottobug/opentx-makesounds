@@ -1,10 +1,10 @@
 #!/bin/bash
 
 #Output directory for finished sound files
-OUTDIR=$(dirname $0)/SOUNDS/en
+OUTDIR=$(dirname $0)/SOUNDS/de
 
 #Use a voice other than system default
-#VOICE="Allison"
+VOICE="Alex"
 
 #Only make files where the destination doesn't already exist
 UPDATEONLY=true
@@ -32,11 +32,12 @@ IFS=,
 SAYCMD=/usr/bin/say
 SOXCMD=/usr/local/bin/sox
 
-VOICE_PARAM=""
-if [[ -n "$VOICE" ]]; then VOICE_PARAM="--voice=\"$VOICE\""; fi
 
-while read OUTFILE SAYING
+
+while read OUTFILE SAYING VOICE
 do
+	VOICE_PARAM=""
+	if [[ -n "$VOICE" ]]; then VOICE_PARAM="--voice=$VOICE"; fi
 	if [[ -z "$OUTFILE" ]]; then continue; fi
 	if [[ -z "$SAYING" ]]; then continue; fi
 	DEST="$OUTDIR/$OUTFILE"
@@ -50,7 +51,7 @@ do
 	fi
 
         if [[ $UPDATEONLY && -e $DEST ]]; then continue; fi
-	
+
 	echo "\"$SAYING\" => $DEST"
 
 	#Ensure output directory exists for each file if it is in a subdirectory
@@ -63,5 +64,5 @@ do
 	$SOXCMD -q "$TMPFILE" ${FORMAT[@]} "$DEST" ${EFFECTS[@]}
 
 	rm $TMPFILE
-	
+
 done
